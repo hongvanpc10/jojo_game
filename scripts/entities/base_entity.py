@@ -3,9 +3,9 @@ import pygame
 
 class PhysicsEntity:
     def __init__(
-        self, game, type: str, pos: tuple[float, float], size: tuple[float, float]
+        self, assets, type: str, pos: tuple[float, float], size: tuple[float, float]
     ):
-        self.game = game
+        self.assets = assets
         self.type = type
         self.pos = list(pos)
         self.size = size
@@ -26,7 +26,7 @@ class PhysicsEntity:
     def set_action(self, action: str):
         if self.action != action:
             self.action = action
-            self.animation = self.game.assets[self.type + "/" + action].copy()
+            self.animation = self.assets[self.type + "/" + action].copy()
 
     def update(self, tilemap, movement: tuple[float, float] = (0, 0)):
         self.collisions = {

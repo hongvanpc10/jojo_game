@@ -4,17 +4,16 @@ import pygame
 class Particle:
     def __init__(
         self,
-        game,
-        type: str,
-        pos: tuple[float, float],
-        velocity: tuple[float, float],
+        animation,
+        type,
+        pos,
+        velocity,
         frame=0,
     ):
-        self.game = game
         self.type = type
         self.pos = list(pos)
         self.velocity = list(velocity)
-        self.animation = self.game.assets["particle/" + self.type].copy()
+        self.animation = animation.copy()
         self.animation.frame = frame
 
     def update(self):
@@ -42,3 +41,7 @@ class Particle:
     @property
     def frame(self):
         return self.animation.frame
+
+    @property
+    def done(self):
+        return self.animation.done

@@ -1,13 +1,21 @@
-import random, math
+import random
+import math
 from .base_entity import PhysicsEntity
 from ..particle import Particle
 from ..projectile import Projectile
-from ..spark import Spark
+import pygame
 
 
 class Player(PhysicsEntity):
-    def __init__(self, game, pos: tuple[float, float], size: tuple[float, float]):
-        super().__init__(game, "player", pos, size)
+    def __init__(
+        self,
+        assets,
+        pos,
+        size,
+        projectile_animation,
+        particle_animation,
+    ):
+        super().__init__(assets, "player", pos, size)
         self.air_time = 0
         self.jumps = 1
         self.wall_slide = False
@@ -15,13 +23,22 @@ class Player(PhysicsEntity):
         self.shooting = 0
         self.dead = False
         self.dead_direction = 1
+        self.particles = []
+        self.projectile_animation = projectile_animation
+        self.particle_animation = particle_animation
+
+    def render(self, surf, offset=(0, 0)):
+        super().render(surf, offset)
+        for particle in self.particles.copy():
+            kill = particle.update()
+            particle.render(surf, offset=offset)
+
+            if kill:
+                self.particles.remove(particle)
 
     def update(self, tilemap, movement: tuple[float, float] = (0, 0)):
-
         if self.dead:
             self.set_action("dead")
-            # if not self.animation.done:
-            #     self.pos[0] += self.dead_direction / abs(self.dead_direction)
             super().update(tilemap, movement=(0, 0))
             return
 
@@ -31,6 +48,9 @@ class Player(PhysicsEntity):
         if self.collisions["bottom"]:
             self.air_time = 0
             self.jumps = 1
+
+        if self.air_time > 120:
+            self.kill(1)
 
         self.wall_slide = False
         if (self.collisions["left"] or self.collisions["right"]) and self.air_time > 4:
@@ -56,14 +76,24 @@ class Player(PhysicsEntity):
                 else:
                     self.set_action("idle")
 
+            for tile, offset in tilemap.tiles_around(self.rect.midtop):
+                if tile.type == "ladder" and offset[0] == 0:
+                    self.velocity[1] = 0
+                    self.air_time = 0
+                    keys = pygame.key.get_pressed()
+                    if keys[pygame.K_UP]:
+                        self.velocity[1] = -1
+                    elif keys[pygame.K_DOWN]:
+                        self.velocity[1] = 1
+
         if abs(self.dashing) in {50, 60}:
             for _ in range(20):
                 angle = random.random() * math.pi * 2
                 speed = random.random() * 0.5 + 0.5
                 particle_velocity = [math.cos(angle) * speed, math.sin(angle) * speed]
-                self.game.particles.append(
+                self.particles.append(
                     Particle(
-                        self.game,
+                        self.particle_animation,
                         "particle",
                         self.rect.center,
                         particle_velocity,
@@ -84,9 +114,9 @@ class Player(PhysicsEntity):
                 abs(self.dashing) / self.dashing * random.random() * 3,
                 0,
             ]
-            self.game.particles.append(
+            self.particles.append(
                 Particle(
-                    self.game,
+                    self.particle_animation,
                     "particle",
                     self.rect.center,
                     particle_velocity,
@@ -119,10 +149,11 @@ class Player(PhysicsEntity):
                 self.jumps = max(0, self.jumps - 1)
                 return True
         elif self.jumps:
-            self.velocity[1] = -2.5
+            self.velocity[1] = -2.75
             self.jumps -= 1
             self.air_time = 5
             return True
+
         return False
 
     def dash(self):
@@ -132,11 +163,12 @@ class Player(PhysicsEntity):
             else:
                 self.dashing = 60
 
-    def shoot(self):
+    def shoot(self, add_projectile):
         if not self.dead and not self.shooting:
-            self.game.player_projectiles.append(
+            self.shooting = 8
+            add_projectile(
                 Projectile(
-                    self.game,
+                    self.projectile_animation,
                     "player",
                     (
                         self.rect.centerx + 10 * (-1 if self.flip else 1),
@@ -146,15 +178,6 @@ class Player(PhysicsEntity):
                     -3 if self.flip else 3,
                 )
             )
-            self.shooting = 8
-            for _ in range(4):
-                self.game.sparks.append(
-                    Spark(
-                        self.game.player_projectiles[-1].pos,
-                        random.random() - 0.5 + (math.pi if self.flip else 0),
-                        1.5 + random.random(),
-                    )
-                )
 
     def kill(self, direction: int):
         self.dead = True

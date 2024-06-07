@@ -1,37 +1,22 @@
 import pygame
 from scripts.tilemap import Tilemap
-from scripts.utils import load_images
-
+from config import Config
 
 RENDER_SCALE = 2.0
-
-OFFGRID_TILES = [
-    "decor",
-    "tree",
-    "spawner",
-]
 
 
 class Editor:
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((640, 380))
+        self.screen = pygame.display.set_mode((640, 360))
         pygame.display.set_caption("Editor")
         self.clock = pygame.time.Clock()
         self.display = pygame.Surface((320, 180))
-
-        self.assets = {
-            "grass": load_images("tiles/grass"),
-            "stone": load_images("tiles/stone"),
-            "obstacle": load_images("tiles/obstacle"),
-            "decor": load_images("tiles/decor"),
-            "tree": load_images("tiles/tree"),
-            "spawner": load_images("tiles/spawner"),
-        }
-
+        self.config = Config()
+        self.assets = self.config.tiles_assets.copy()
         self.movement = [False, False, False, False]
 
-        self.tilemap = Tilemap(self, tile_size=16)
+        self.tilemap = Tilemap(self.config)
         self.tilemap.load("map.json")
 
         self.scroll = [0, 0]
@@ -44,7 +29,7 @@ class Editor:
         self.right_click = False
         self.shift = False
 
-        self.ongrid = True
+        self.ongrid = self.tiles_list[self.tile_group] not in self.config.offgrid_tiles
 
     def run(self):
         running = True
@@ -56,6 +41,7 @@ class Editor:
             render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
 
             self.tilemap.render(self.display, offset=render_scroll)
+            self.tilemap.update()
 
             current_tile_image = self.assets[self.tiles_list[self.tile_group]][
                 self.tile_variant
@@ -110,7 +96,7 @@ class Editor:
                             )
 
                             self.ongrid = (
-                                self.tiles_list[self.tile_group] not in OFFGRID_TILES
+                                self.tiles_list[self.tile_group] not in self.config.offgrid_tiles
                             )
 
                             self.tile_variant = 0
@@ -121,7 +107,7 @@ class Editor:
                             )
 
                             self.ongrid = (
-                                self.tiles_list[self.tile_group] not in OFFGRID_TILES
+                                self.tiles_list[self.tile_group] not in self.config.offgrid_tiles
                             )
 
                             self.tile_variant = 0

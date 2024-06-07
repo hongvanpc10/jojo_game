@@ -1,17 +1,34 @@
-import random, math
+import random
 from .base_entity import PhysicsEntity
 from ..projectile import Projectile
-from ..spark import Spark
 
 
 class Enemy(PhysicsEntity):
-    def __init__(self, game, pos: tuple[float, float], size: tuple[float, float]):
-        super().__init__(game, "enemy", pos, size)
+    def __init__(
+        self,
+        assets,
+        pos: tuple[float, float],
+        size: tuple[float, float],
+        projectile_animation,
+    ):
+        super().__init__(
+            assets,
+            "enemy",
+            pos,
+            size,
+        )
         self.walking = 0
         self.shooting = 0
         self.dead = False
+        self.projectile_animation = projectile_animation
 
-    def update(self, tilemap, movement: tuple[float, float] = (0, 0)):
+    def update(
+        self,
+        tilemap,
+        add_projectile,
+        player,
+        movement: tuple[float, float] = (0, 0),
+    ):
         if self.dead:
             self.set_action("dead")
             super().update(tilemap, movement)
@@ -29,16 +46,16 @@ class Enemy(PhysicsEntity):
 
             self.walking = max(0, self.walking - 1)
 
-            if not self.walking and not self.game.player.dead:
+            if not self.walking and not player.dead:
                 dis = (
-                    self.game.player.pos[0] - self.pos[0],
-                    self.game.player.pos[1] - self.pos[1],
+                    player.pos[0] - self.pos[0],
+                    player.pos[1] - self.pos[1],
                 )
                 if abs(dis[1]) < 16:
                     if self.flip and dis[0] < 0:
-                        self.game.enemy_projectiles.append(
+                        add_projectile(
                             Projectile(
-                                self.game,
+                                self.projectile_animation,
                                 "enemy",
                                 (self.rect.centerx - 10, self.rect.centery + 2),
                                 (4, 4),
@@ -46,18 +63,10 @@ class Enemy(PhysicsEntity):
                             )
                         )
                         self.shooting = 20
-                        for _ in range(4):
-                            self.game.sparks.append(
-                                Spark(
-                                    self.game.enemy_projectiles[-1].pos,
-                                    random.random() - 0.5 + math.pi,
-                                    1.5 + random.random(),
-                                )
-                            )
                     if not self.flip and dis[0] > 0:
-                        self.game.enemy_projectiles.append(
+                        add_projectile(
                             Projectile(
-                                self.game,
+                                self.projectile_animation,
                                 "enemy",
                                 (self.rect.centerx + 10, self.rect.centery + 2),
                                 (4, 4),
@@ -65,14 +74,7 @@ class Enemy(PhysicsEntity):
                             )
                         )
                         self.shooting = 20
-                        for _ in range(4):
-                            self.game.sparks.append(
-                                Spark(
-                                    self.game.enemy_projectiles[-1].pos,
-                                    random.random() - 0.5,
-                                    1.5 + random.random(),
-                                )
-                            )
+
         elif random.random() < 0.05:
             self.walking = random.randint(30, 120)
 

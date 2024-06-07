@@ -1,19 +1,17 @@
-import pygame, os
+import pygame
+import os
 import re
 
 
-BASE_IMAGE_PATH = "assets/images/"
-
-
 def load_image(path: str):
-    image = pygame.image.load(BASE_IMAGE_PATH + path).convert_alpha()
+    image = pygame.image.load(path).convert_alpha()
     image.set_colorkey((0, 0, 0))
     return image
 
 
 def load_images(path: str):
     images = []
-    for file in sorted(os.listdir(BASE_IMAGE_PATH + path)):
+    for file in sorted(os.listdir(path)):
         if re.match(r".*\.(png|jpg|jpeg|gif|bmp)", file):
             images.append(load_image(path + "/" + file))
 
