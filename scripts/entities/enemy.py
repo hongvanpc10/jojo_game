@@ -4,6 +4,10 @@ from ..projectile import Projectile
 
 
 class Enemy(PhysicsEntity):
+    """
+    Enemy is presented for the enemies that the player will face in the game.
+    """
+
     def __init__(
         self,
         assets,
@@ -11,6 +15,16 @@ class Enemy(PhysicsEntity):
         size: tuple[float, float],
         projectile_animation,
     ):
+        """
+        Create a new Enemy object.
+
+        Parameters:
+            assets (dict): The assets of the enemy. It should contain the animations for the enemy. Each key should be the type of the animation and the value should be an Animation object.
+            pos (tuple[float, float]): The position of the enemy.
+            size (tuple[float, float]): The size of the enemy.
+            projectile_animation (Animation): The animation of the projectile that the enemy will shoot. It should be an Animation object.
+        """
+
         super().__init__(
             assets,
             "enemy",
@@ -29,6 +43,16 @@ class Enemy(PhysicsEntity):
         player,
         movement: tuple[float, float] = (0, 0),
     ):
+        '''
+        Update the enemy.
+
+        Parameters:
+            tilemap (Tilemap): The tilemap object where the enemy is.
+            add_projectile (function): The function to add a new projectile to the game.
+            player (PhysicsEntity): The player object.
+            movement (tuple[float, float]): The movement of the enemy. It should be a tuple with the x and y movement. Default is (0, 0).
+        '''
+
         if self.dead:
             self.set_action("dead")
             super().update(tilemap, movement)

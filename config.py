@@ -3,7 +3,15 @@ from scripts.utils import Animation, load_images, load_image
 
 
 class Config:
+    """
+    Config class is used to store all the game configurations, such as assets, sounds, and fonts.
+    """
+
     def __init__(self):
+        """
+        Create a new Config object. It will load all the assets, sounds, and fonts used in the game.
+        """
+
         self.base_images_path = "assets/images/"
 
         self.player_assets = {
@@ -50,6 +58,7 @@ class Config:
             "portal": load_images(self.base_images_path + "tiles/portal"),
             "cave": load_images(self.base_images_path + "tiles/cave"),
             "checkpoint": load_images(self.base_images_path + "tiles/checkpoint"),
+            "ammo": load_images(self.base_images_path + "tiles/ammo"),
         }
 
         self.enemy_assets = {
@@ -117,6 +126,7 @@ class Config:
             "portal",
             "cave",
             "checkpoint",
+            "ammo",
         }
 
         self.player_icon = load_image(self.base_images_path + "ui/player_icon.png")
@@ -130,3 +140,26 @@ class Config:
         self.font_18 = pygame.font.Font("assets/fonts/PressStart2P.ttf", 18)
         self.font_16 = pygame.font.Font("assets/fonts/PressStart2P.ttf", 16)
         self.font_32 = pygame.font.Font("assets/fonts/PressStart2P.ttf", 32)
+
+        self.map_path = "data/maps/"
+        self.level_file = "data/level.txt"
+
+        self.theme_music = "assets/sounds/theme.ogg"
+        self.end_music = "assets/sounds/end.ogg"
+        self.ambience_music = "assets/sounds/ambience.wav"
+
+        self.sfx = {
+            "jump": pygame.mixer.Sound("assets/sounds/jump.ogg"),
+            "shoot": pygame.mixer.Sound("assets/sounds/shoot.ogg"),
+            "bomb": pygame.mixer.Sound("assets/sounds/bomb.ogg"),
+            "hit": pygame.mixer.Sound("assets/sounds/hit.ogg"),
+            "select": pygame.mixer.Sound("assets/sounds/select.ogg"),
+            "hurt": pygame.mixer.Sound("assets/sounds/hurt.ogg"),
+            "dash": pygame.mixer.Sound("assets/sounds/dash.wav"),
+            "explosion": pygame.mixer.Sound("assets/sounds/explosion.ogg"),
+        }
+
+        for sfx in self.sfx.values():
+            sfx.set_volume(0.1)
+
+        self.sfx["hit"].set_volume(0.2)

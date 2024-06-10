@@ -6,7 +6,15 @@ RENDER_SCALE = 2.0
 
 
 class Editor:
+    """
+    Editor class is used to create a level editor for the game. It allows the user to create and edit the levels.
+    """
+
     def __init__(self):
+        """
+        Create a new Editor object.
+        """
+
         pygame.init()
         self.screen = pygame.display.set_mode((640, 360))
         pygame.display.set_caption("Editor")
@@ -32,6 +40,12 @@ class Editor:
         self.ongrid = self.tiles_list[self.tile_group] not in self.config.offgrid_tiles
 
     def run(self):
+        '''
+        Run the editor.
+
+        This method will run the editor and allow the user to create and edit the levels.
+        '''
+
         running = True
         while running:
             self.display.fill((82, 168, 255))
@@ -96,7 +110,8 @@ class Editor:
                             )
 
                             self.ongrid = (
-                                self.tiles_list[self.tile_group] not in self.config.offgrid_tiles
+                                self.tiles_list[self.tile_group]
+                                not in self.config.offgrid_tiles
                             )
 
                             self.tile_variant = 0
@@ -107,7 +122,8 @@ class Editor:
                             )
 
                             self.ongrid = (
-                                self.tiles_list[self.tile_group] not in self.config.offgrid_tiles
+                                self.tiles_list[self.tile_group]
+                                not in self.config.offgrid_tiles
                             )
 
                             self.tile_variant = 0
