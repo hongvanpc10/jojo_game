@@ -1,8 +1,16 @@
 # Game JOJO
 
-## Demo
+## Screenshots
 
-![Demo](assets/images/demo.gif)
+![Screenshot 1](assets/images/screenshots/0.png)
+
+![Screenshot 2](assets/images/screenshots/1.png)
+
+![Screenshot 3](assets/images/screenshots/2.png)
+
+![Screenshot 4](assets/images/screenshots/3.png)
+
+![Screenshot 5](assets/images/screenshots/4.png)
 
 ## Features
 
