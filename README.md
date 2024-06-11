@@ -2,15 +2,11 @@
 
 ## Screenshots
 
-![Screenshot 1](assets/images/screenshots/0.png)
-
-![Screenshot 2](assets/images/screenshots/1.png)
-
-![Screenshot 3](assets/images/screenshots/2.png)
-
-![Screenshot 4](assets/images/screenshots/3.png)
-
-![Screenshot 5](assets/images/screenshots/4.png)
+<img alt="0" src="assets/images/screenshots/0.png" width="500" style="margin-bottom: 24px">
+<img alt="1" src="assets/images/screenshots/1.png" width="500" style="margin-bottom: 24px">
+<img alt="2" src="assets/images/screenshots/2.png" width="500" style="margin-bottom: 24px">
+<img alt="3" src="assets/images/screenshots/3.png" width="500" style="margin-bottom: 24px">
+<img alt="4" src="assets/images/screenshots/4.png" width="500" style="margin-bottom: 24px">
 
 ## Features
 
